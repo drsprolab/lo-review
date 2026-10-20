@@ -30,3 +30,4 @@ GitHub Pages (main 브랜치 루트). push 하면 1~2분 뒤 반영.
 ## Sample 묶음 (2026-10-20)
 - PRO-AX Lab Review의 김예서·김재현 리뷰 2편을 이 시트(reviews)에 **복사**해 작성 예시로 씀. 대문 맨 위 'Sample' 접힌 묶음, 주차 묶음·전체 편수에서 제외
 - `SAMPLE_IDS` in `js/app.js` (이 시트의 id: 김예서 c5374508…, 김재현 db8b1498…). 원본(PRO-AX 시트)을 고쳐도 여기는 바뀌지 않음
+- **제출 후 대문으로 이동** (2026-10-20): 제출이 끝나면 `index.html?submitted=<id>&kind=reviews|maps`로 옮겨 그 카드가 든 묶음을 펼치고 '방금 제출'로 강조(`PL.showSubmitted` → `markSubmitted` in `js/app.js`). 제출 완료 화면(doneBar)은 더 이상 쓰지 않음 — PDF는 제출 전 확인 화면의 'PDF로 받기'
