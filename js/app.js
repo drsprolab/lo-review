@@ -143,7 +143,7 @@
 
     if (!list.length) {
       els.mapEntries.innerHTML = '<div class="empty"><strong>아직 제출된 Conceptual Map이 없습니다</strong>' +
-        '수요일 세미나 자료를 제출하면 이곳에 도식과 함께 표시됩니다. ' +
+        'Conceptual Map을 제출하면 이곳에 도식과 함께 표시됩니다. ' +
         '<a href="concept.html">첫 Conceptual Map 제출하기</a></div>';
       return;
     }
