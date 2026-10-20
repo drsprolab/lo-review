@@ -397,3 +397,11 @@ input[type="search"], input[type="text"], input[type="url"], input[type="number"
   .kv dd { margin-bottom: 10px; }
   .inst-actions .btn { flex: 1 1 auto; }
 }
+
+/* 상단 브랜드: PRO-AX Lab 로고 + LO_Review 이름 (다크 테마에서는 밝은 로고) */
+.brand-logo { display: flex; align-items: center; padding-right: 12px; margin-right: 2px; border-right: 1px solid var(--line); line-height: 0; }
+.brand-logo img { height: 36px; width: auto; }
+.brand-logo .logo-dark { display: none; }
+html[data-theme="dark"] .brand-logo .logo-light { display: none; }
+html[data-theme="dark"] .brand-logo .logo-dark { display: block; }
+@media (max-width: 520px) { .brand-logo img { height: 28px; } }
