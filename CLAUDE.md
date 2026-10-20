@@ -26,3 +26,7 @@ GitHub Pages (main 브랜치 루트). push 하면 1~2분 뒤 반영.
 - APA 입력 시 MDPI·Frontiers 계열이거나 SSCI 미등재면 빨간 경고(`#jcheckWarn`)를 띄우고 확인·제출 버튼을 막음. `js/journal-check.js` (PRO-AX Lab Review와 같은 파일)
 - SSCI 목록은 `data/ssci.json` (`{version, journals:[{title, issn, eissn}]}`). 파일이 없으면 SSCI 검사는 건너뜀
 - **2026-10-20 교수님 결정: SSCI 미등재 차단은 보류.** `data/ssci.json`을 만들지 말 것(파일이 없으면 검사가 꺼진 상태). 다시 하라고 할 때만 Clarivate SSCI 목록으로 파일 생성
+
+## Sample 묶음 (2026-10-20)
+- PRO-AX Lab Review의 김예서·김재현 리뷰 2편을 이 시트(reviews)에 **복사**해 작성 예시로 씀. 대문 맨 위 'Sample' 접힌 묶음, 주차 묶음·전체 편수에서 제외
+- `SAMPLE_IDS` in `js/app.js` (이 시트의 id: 김예서 c5374508…, 김재현 db8b1498…). 원본(PRO-AX 시트)을 고쳐도 여기는 바뀌지 않음

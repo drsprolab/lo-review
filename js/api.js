@@ -40,26 +40,11 @@
     }).then(unwrap);
   }
 
-  // 사이트에서 감출 행(테스트 제출 등). 구글 시트에서 행을 지우기 전까지 여기서 걸러 냅니다.
-  var HIDDEN_IDS = [
-    'fc2ccb55-6e84-4957-a89b-aa559cf079a9', // reviews — 테스트(삭제 예정) · The fifth discipline
-    '53e0b867-7c19-4b2c-b426-a17dc9cb308a', // reviews — 테스트2(삭제 예정) · Psychological safety
-    'd7bec9e0-6580-492e-a156-3a7600d32ced'  // concept_maps — 테스트(삭제 예정) · 시스템 사고
-  ];
-
-  function visible(row) {
-    return row && HIDDEN_IDS.indexOf(row.id) === -1;
-  }
-
   function makeApi(table) {
     return {
       name: table,
-      list: function () {
-        return gasGet({ action: 'list', table: table }).then(function (rows) { return (rows || []).filter(visible); });
-      },
-      get: function (id) {
-        return gasGet({ action: 'get', table: table, id: id }).then(function (row) { return visible(row) ? row : null; });
-      },
+      list: function () { return gasGet({ action: 'list', table: table }); },
+      get: function (id) { return gasGet({ action: 'get', table: table, id: id }); },
       create: function (data) { return gasPost({ action: 'create', table: table, data: data }); },
       update: function (id, data) { return gasPost({ action: 'update', table: table, id: id, data: data }); },
       remove: function () { return Promise.reject(new Error('삭제는 구글 시트에서 직접 해 주세요.')); }

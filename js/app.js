@@ -81,9 +81,41 @@
       });
   }
 
+  /* ---------- Sample 묶음 ----------
+   * 작성 예시. PRO-AX Lab Review의 김예서·김재현 리뷰를 이 시트로 복사해 두었습니다.
+   * 주차 묶음에서 빼고 맨 위의 'Sample' 묶음에 따로 둡니다. 시트의 id 로 지정합니다.
+   */
+  var SAMPLE_IDS = {
+    reviews: [
+      'c5374508-9bb7-4edc-94ae-58270ffad141', // 김예서 — Making transparency transparent
+      'db8b1498-3dbb-42d4-b446-af22fe119b6f'  // 김재현 — Transfer of training
+    ],
+    maps: []
+  };
+
+  function isSample(row, kind) {
+    return SAMPLE_IDS[kind].indexOf(row.id) !== -1;
+  }
+
+  function countLabel(list, kind) {
+    var n = list.filter(function (r) { return isSample(r, kind); }).length;
+    return '전체 ' + (list.length - n) + '편' + (n ? ' · Sample ' + n + '편' : '');
+  }
+
+  function sampleGroup(rows, gridClass, card) {
+    if (!rows.length) return '';
+    return '<details class="wk-fold wk-sample">' +
+      '<summary class="wk-head">Sample<small>' + rows.length + '편</small>' +
+        '<span class="wk-note">작성 예시</span></summary>' +
+      '<div class="' + gridClass + '">' + rows.map(card).join('') + '</div>' +
+    '</details>';
+  }
+
   function renderWeeks(container, list, kind, gridClass, card) {
     var now = new Date();
-    container.innerHTML = groupByWeek(list).map(function (g) {
+    var samples = list.filter(function (r) { return isSample(r, kind); });
+    var rest = list.filter(function (r) { return !isSample(r, kind); });
+    container.innerHTML = sampleGroup(samples, gridClass, card) + groupByWeek(rest).map(function (g) {
       var at = foldAt(g.key, kind);
       var cards = '<div class="' + gridClass + '">' + g.rows.map(card).join('') + '</div>';
       var count = '<small>' + g.rows.length + '편</small>';
@@ -106,7 +138,7 @@
   function renderReviews() {
     var list = state.reviews;
     els.reviewEntries.setAttribute('aria-busy', 'false');
-    els.reviewSub.textContent = '전체 ' + list.length + '편';
+    els.reviewSub.textContent = countLabel(list, 'reviews');
 
     if (!list.length) {
       els.reviewEntries.innerHTML = '<div class="empty"><strong>아직 제출된 논문 리뷰가 없습니다</strong>' +
@@ -139,7 +171,7 @@
   function renderMaps() {
     var list = state.maps;
     els.mapEntries.setAttribute('aria-busy', 'false');
-    els.mapSub.textContent = '전체 ' + list.length + '편';
+    els.mapSub.textContent = countLabel(list, 'maps');
 
     if (!list.length) {
       els.mapEntries.innerHTML = '<div class="empty"><strong>아직 제출된 Conceptual Map이 없습니다</strong>' +
