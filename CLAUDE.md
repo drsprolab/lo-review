@@ -14,9 +14,10 @@ PRO-AX Lab Review(`drsprolab/proax-lab-review`, /proax-lab-review/)를 복사해
 - 임시 저장 키는 PRO-AX와 겹치지 않게 `lo-review-*`, `lo-concept-*` (같은 도메인이라 localStorage 공유됨)
 
 ## 저장소
-- PRO-AX Lab Review와 **같은 구글 시트·Apps Script**를 쓰고, 탭만 따로: `lo_reviews`, `lo_concept_maps` (`TABLE_NAMES` in `js/api.js`)
-- 도식 이미지는 드라이브 'LO_Review 도식' 폴더 (업로드 요청에 `folder: 'lo'`)
-- Apps Script 코드는 `proax-lab-review/apps-script/Code.gs` 한 곳에서 관리 (TABLES에 lo_ 탭 포함). 코드를 고치면 교수님이 편집기에 붙여넣고 **배포 → 배포 관리 → 수정 → 새 버전 → 배포** (주소 그대로)
+- **PRO-AX Lab Review와 완전히 별도로 운영** (교수님 결정, 2026-10-20). 시트·Apps Script·드라이브 폴더 모두 따로
+- LO_Review 전용 구글 시트 + `apps-script/Code.gs` (탭: reviews, concept_maps / 도식 폴더: 'LO_Review 도식')
+- `js/api.js`의 `GAS_URL`에 LO_Review 전용 웹앱 …/exec 주소를 넣는다. 비어 있으면 미리보기 모드(이 브라우저에만 저장, 안내 띠 표시)
+- Apps Script 코드를 고치면 교수님이 편집기에 붙여넣고 **배포 → 배포 관리 → 수정 → 새 버전 → 배포** (주소 그대로)
 
 ## 배포
 GitHub Pages (main 브랜치 루트). push 하면 1~2분 뒤 반영.

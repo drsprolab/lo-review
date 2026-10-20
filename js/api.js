@@ -5,12 +5,12 @@
 (function () {
   'use strict';
 
-  // PRO-AX Lab Review와 같은 구글 시트(Apps Script)를 쓰되, 탭을 따로 둔다
-  var TABLE_NAMES = { reviews: 'lo_reviews', concept_maps: 'lo_concept_maps', students: 'students' };
+  var TABLE_NAMES = { reviews: 'reviews', students: 'students' };
 
   // 구글 Apps Script 웹앱 주소 (apps-script/Code.gs 를 배포하고 받은 …/exec 주소).
   // 비어 있으면 'local' = 이 브라우저(localStorage)에만 저장하는 미리보기 모드.
-  var GAS_URL = 'https://script.google.com/macros/s/AKfycbx5fCuGE2LXr9yD2HA8ozIWjGhPEv27tq35L97IpZ147RaqXdbiLf48-wE06K9fZsaKjA/exec';
+  // LO_Review 전용 시트의 웹앱 주소 (PRO-AX Lab Review와 별도). 받으면 여기에 넣는다.
+  var GAS_URL = '';
   var BACKEND = GAS_URL ? 'google' : 'local';
 
   /* ---------- 구글 시트 저장 (Apps Script) ---------- */
@@ -138,7 +138,6 @@
       // 구글 드라이브에 저장 → reference 는 드라이브 파일 id
       return gasPost({
         action: 'upload',
-        folder: 'lo',
         name: file.name,
         type: file.type,
         data: String(dataUrl).split(',')[1] || ''
