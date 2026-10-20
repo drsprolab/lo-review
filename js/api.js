@@ -10,7 +10,7 @@
   // 구글 Apps Script 웹앱 주소 (apps-script/Code.gs 를 배포하고 받은 …/exec 주소).
   // 비어 있으면 'local' = 이 브라우저(localStorage)에만 저장하는 미리보기 모드.
   // LO_Review 전용 시트의 웹앱 주소 (PRO-AX Lab Review와 별도). 받으면 여기에 넣는다.
-  var GAS_URL = '';
+  var GAS_URL = 'https://script.google.com/macros/s/AKfycbwpKp-sptfeLPS95F-TyVDw3MhpAA-Rd1GOjQcEKCl4qOAkSlJnBsMfsG0pjGRHC0fpjg/exec';
   var BACKEND = GAS_URL ? 'google' : 'local';
 
   /* ---------- 구글 시트 저장 (Apps Script) ---------- */
