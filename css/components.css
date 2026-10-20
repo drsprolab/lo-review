@@ -486,3 +486,8 @@ html[data-theme="dark"] .doc { box-shadow: 0 10px 30px rgba(0, 0, 0, .35); }
   .metagrid { grid-template-columns: 1fr; gap: 10px; }
   .post-nav { flex-wrap: wrap; }
 }
+
+/* 학술지 확인 경고 (MDPI · Frontiers · SSCI 미등재) */
+.jcheck-warn { margin-top: 10px; padding: 12px 14px; border: 1px solid var(--danger); border-left-width: 4px; border-radius: 8px; background: color-mix(in srgb, var(--danger) 8%, var(--paper)); color: var(--danger); font-size: 14px; font-weight: 600; line-height: 1.6; }
+.jcheck-warn::before { content: "제출 불가 · "; }
+.btn[disabled] { opacity: .45; cursor: not-allowed; }

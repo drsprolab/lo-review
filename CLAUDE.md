@@ -20,3 +20,7 @@ PRO-AX Lab Review(`drsprolab/proax-lab-review`, /proax-lab-review/)를 복사해
 
 ## 배포
 GitHub Pages (main 브랜치 루트). push 하면 1~2분 뒤 반영.
+
+## 학술지 자동 점검 (2026-10-20)
+- APA 입력 시 MDPI·Frontiers 계열이거나 SSCI 미등재면 빨간 경고(`#jcheckWarn`)를 띄우고 확인·제출 버튼을 막음. `js/journal-check.js` (PRO-AX Lab Review와 같은 파일)
+- SSCI 목록은 `data/ssci.json` (`{version, journals:[{title, issn, eissn}]}`). 파일이 없으면 SSCI 검사는 건너뜀
