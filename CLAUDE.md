@@ -31,3 +31,10 @@ GitHub Pages (main 브랜치 루트). push 하면 1~2분 뒤 반영.
 - PRO-AX Lab Review의 김예서·김재현 리뷰 2편을 이 시트(reviews)에 **복사**해 작성 예시로 씀. 대문 맨 위 'Sample' 접힌 묶음, 주차 묶음·전체 편수에서 제외
 - `SAMPLE_IDS` in `js/app.js` (이 시트의 id: 김예서 c5374508…, 김재현 db8b1498…). 원본(PRO-AX 시트)을 고쳐도 여기는 바뀌지 않음
 - **제출 후 대문으로 이동** (2026-10-20): 제출이 끝나면 `index.html?submitted=<id>&kind=reviews|maps`로 옮겨 그 카드가 든 묶음을 펼치고 '방금 제출'로 강조(`PL.showSubmitted` → `markSubmitted` in `js/app.js`). 제출 완료 화면(doneBar)은 더 이상 쓰지 않음 — PDF는 제출 전 확인 화면의 'PDF로 받기'
+
+## 비밀번호 (2026-10-21)
+- 처음 들어올 때 비밀번호 화면(`#pw-gate`, `js/api.js`). 맞으면 브라우저 localStorage에 기억(`proax-review-pass` / `lo-review-pass`)
+- 실제 확인은 Apps Script: 모든 요청에 `key`를 붙이고, `checkPassword`가 **스크립트 속성 `PASSWORD`**와 비교. 틀리면 `AUTH:` 오류 → 저장된 비밀번호 지우고 다시 묻기
+- 비밀번호는 코드·GitHub에 두지 않는다. 교수님이 Apps Script 편집기 → 프로젝트 설정 → 스크립트 속성에서 직접 설정·변경
+- `PASSWORD`가 비어 있으면 잠기지 않음. 예전 Apps Script(auth 모름)일 때는 아무 입력이나 통과(전환기 대비)
+- PRO-AX와 LO_Review 비밀번호는 서로 별개
