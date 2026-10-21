@@ -95,6 +95,22 @@ a.chip-week:hover { border-color: var(--accent); }
   text-decoration: none; color: var(--ink);
   transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
 }
+.review-card-wrap { position: relative; min-width: 0; }
+.review-card-wrap > .inst { height: 100%; }
+.review-title { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.best-week-badge {
+  display: inline-block; color: #d71920; font-size: 12px; font-weight: 700;
+  letter-spacing: .035em; white-space: nowrap; animation: best-week-blink 1s steps(2, start) infinite;
+}
+.best-week-toggle {
+  margin: 8px 0 0 4px; padding: 4px 9px; border: 1px solid var(--line);
+  border-radius: 6px; background: var(--paper); color: var(--muted); font: inherit;
+  font-size: 12px; cursor: pointer;
+}
+.best-week-toggle:hover, .best-week-toggle.is-selected { border-color: #d71920; color: #d71920; }
+.best-week-toggle:disabled { opacity: .55; cursor: wait; }
+@keyframes best-week-blink { to { visibility: hidden; } }
+@media (prefers-reduced-motion: reduce) { .best-week-badge { animation: none; } }
 .inst:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 10px 24px rgba(0, 0, 0, .06); }
 .inst h3 { font-size: 18px; line-height: 1.45; margin: 0; }
 .inst p {
