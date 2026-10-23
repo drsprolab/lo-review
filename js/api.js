@@ -112,7 +112,8 @@
       list: function () { return gasGet({ action: 'list', table: table }); },
       get: function (id) { return gasGet({ action: 'get', table: table, id: id }); },
       create: function (data) { return gasPost({ action: 'create', table: table, data: data }); },
-      update: function (id, data) { return gasPost({ action: 'update', table: table, id: id, data: data }); },
+      // 선정 변경은 기존 제출 시각을 전달하고, 본문 재제출은 서버의 새 updated_at을 사용합니다.
+      update: function (id, data) { return gasPost({ action: 'update', table: table, id: id, data: Object.assign({ submitted_time: null }, data) }); },
       remove: function () { return Promise.reject(new Error('삭제는 구글 시트에서 직접 해 주세요.')); }
     };
   }
@@ -162,7 +163,7 @@
         var hit = null;
         rows = rows.map(function (r) {
           if (r.id !== id) return r;
-          hit = Object.assign({}, r, data, { id: id, updated_at: Date.now() });
+          hit = Object.assign({}, r, { submitted_time: null }, data, { id: id, updated_at: Date.now() });
           return hit;
         });
         if (!hit) throw new Error('수정할 기록을 찾지 못했습니다.');
