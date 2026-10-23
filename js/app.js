@@ -37,12 +37,19 @@
     return String(row.best_of_week).toLowerCase() === 'true';
   }
 
+  function bestAlreadyChosen(weekKey) {
+    return state.reviews.concat(state.maps).some(function (row) {
+      return isBest(row) && String(row.week_key || '') === String(weekKey || '');
+    });
+  }
+
   function bestControl(row, kind) {
     var best = isBest(row);
-    return '<label class="best-checkbox" title="Best Review of Week 선정 / 해제">' +
+    if (!best && bestAlreadyChosen(row.week_key)) return '';
+    return '<label class="best-checkbox" title="' + (best ? 'Best of Week 고정됨' : 'Best Review of Week 선정') + '">' +
       '<input type="checkbox" data-best-kind="' + kind + '" data-best-id="' + PL.esc(row.id) +
       '" aria-label="' + PL.esc((row.student || '이름 없음') + ' · Best Review of Week') +
-      '"' + (best ? ' checked' : '') + ' />' +
+      '"' + (best ? ' checked disabled' : '') + ' />' +
       '<span class="best-week-badge"' + (best ? '' : ' hidden') + '>Best Review of Week</span></label>';
   }
 
@@ -242,6 +249,7 @@
       .then(function (rows) {
         state.reviews = rows || [];
         renderReviews();
+        renderMaps();
         markSubmitted('reviews', els.reviewEntries);
       })
       .catch(function (err) {
@@ -254,6 +262,7 @@
       .then(function (rows) {
         state.maps = rows || [];
         renderMaps();
+        renderReviews();
         markSubmitted('maps', els.mapEntries);
       })
       .catch(function (err) {
@@ -282,10 +291,14 @@
       if (!row || input.disabled) return;
       var previous = isBest(row);
       var next = input.checked;
-      // 체크 즉시 바로 옆에 배지를 표시하고, 저장 실패 시 원래 상태로 복원합니다.
+      if (previous || !next) return;
+      // 선택 즉시 주차 내 다른 체크박스를 감추고, 저장에 실패하면 복원합니다.
       showBestSelection(input, next);
       input.disabled = true;
       input.setAttribute('aria-busy', 'true');
+      row.best_of_week = true;
+      renderReviews();
+      renderMaps();
       PL.table(kind === 'maps' ? 'concept_maps' : 'reviews').update(id, {
         best_of_week: next,
         submitted_time: row.submitted_time || row.updated_at || row.created_at || null
@@ -294,12 +307,13 @@
           throw new Error('저장 결과를 확인하지 못했습니다. 다시 시도해 주세요.');
         }
         Object.assign(row, updated);
+        renderReviews();
+        renderMaps();
       }).catch(function (err) {
-        showBestSelection(input, previous);
+        row.best_of_week = previous;
+        renderReviews();
+        renderMaps();
         PL.toast('BEST 표시를 저장하지 못했습니다: ' + (err.message || '네트워크 오류'), 'error');
-      }).then(function () {
-        input.disabled = false;
-        input.removeAttribute('aria-busy');
       });
     });
   }
