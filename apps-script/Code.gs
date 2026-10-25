@@ -52,7 +52,9 @@ function route(req) {
     case 'create': return withLock(function () { return createRow(sheetFor(req.table), req.data || {}); });
     case 'update': return withLock(function () {
       var data = req.data || {};
-      validateBestUpdate(req.table, req.id, data);
+      if (Object.prototype.hasOwnProperty.call(data, 'best_of_week')) {
+        return updateBest(req.table, req.id, data);
+      }
       return updateRow(sheetFor(req.table), req.id, data);
     });
     case 'upload': return uploadImage(req);
@@ -71,24 +73,27 @@ function checkPassword(req) {
   if (String(req.key || '') !== String(pw)) throw new Error('AUTH: 비밀번호가 맞지 않습니다.');
 }
 
-// 주차별 BEST는 한 편만 지정할 수 있고, 지정한 뒤에는 해제할 수 없습니다.
-function validateBestUpdate(table, id, data) {
-  if (!Object.prototype.hasOwnProperty.call(data, 'best_of_week')) return;
-  var current = getRow(sheetFor(table), id);
+// 체크박스 선택/해제: 한 주에 한 편만 남기고 기존 선정은 같은 잠금 안에서 해제합니다.
+function updateBest(table, id, data) {
+  var sheet = sheetFor(table);
+  var current = getRow(sheet, id);
   if (!current) throw new Error('수정할 기록을 찾지 못했습니다.');
-  var wasBest = current.best_of_week === true || String(current.best_of_week) === 'true';
-  var willBeBest = data.best_of_week === true || String(data.best_of_week) === 'true';
-  if (wasBest && !willBeBest) throw new Error('BEST of Week 지정은 해제할 수 없습니다.');
-  if (!willBeBest || wasBest) return;
-
-  var week = String(current.week_key || '');
-  var alreadySelected = TABLES.some(function (name) {
-    return listRows(sheetFor(name)).some(function (row) {
-      return String(row.id) !== String(id) && String(row.week_key || '') === week &&
-        (row.best_of_week === true || String(row.best_of_week) === 'true');
+  var selected = data.best_of_week === true || String(data.best_of_week) === 'true';
+  if (selected) {
+    TABLES.forEach(function (name) {
+      var otherSheet = sheetFor(name);
+      listRows(otherSheet).forEach(function (row) {
+        if (String(row.id) !== String(id) && String(row.week_key || '') === String(current.week_key || '') &&
+            (row.best_of_week === true || String(row.best_of_week) === 'true')) {
+          updateRow(otherSheet, row.id, { best_of_week: false, best_selected_at: '' });
+        }
+      });
     });
-  });
-  if (alreadySelected) throw new Error('이번 주 BEST가 이미 지정되어 있습니다.');
+  }
+  return updateRow(sheet, id, Object.assign({}, data, {
+    best_of_week: selected,
+    best_selected_at: selected ? Date.now() : ''
+  }));
 }
 
 function withLock(fn) {

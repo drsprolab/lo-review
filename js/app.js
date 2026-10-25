@@ -12,6 +12,7 @@
     reviews: [],
     maps: []
   };
+  var savingBest = false;
 
   var els = {
     reviewEntries: document.getElementById('reviewEntries'),
@@ -34,29 +35,17 @@
   }
 
   function isBest(row) {
-    return String(row.best_of_week).toLowerCase() === 'true';
-  }
-
-  function bestAlreadyChosen(weekKey) {
-    return state.reviews.concat(state.maps).some(function (row) {
-      return isBest(row) && String(row.week_key || '') === String(weekKey || '');
-    });
+    // 예전 임시 선정에는 선정 시각이 없다. 새로 선택한 제출물만 배지로 표시한다.
+    return String(row.best_of_week).toLowerCase() === 'true' && !!row.best_selected_at;
   }
 
   function bestControl(row, kind) {
     var best = isBest(row);
-    if (!best && bestAlreadyChosen(row.week_key)) return '';
-    return '<label class="best-checkbox" title="' + (best ? 'Best of Week 고정됨' : 'Best Review of Week 선정') + '">' +
+    return '<label class="best-checkbox" title="' + (best ? 'Best Review of Week 선정 해제' : 'Best Review of Week 선정') + '">' +
       '<input type="checkbox" data-best-kind="' + kind + '" data-best-id="' + PL.esc(row.id) +
       '" aria-label="' + PL.esc((row.student || '이름 없음') + ' · Best Review of Week') +
-      '"' + (best ? ' checked disabled' : '') + ' />' +
+      '"' + (best ? ' checked' : '') + (savingBest ? ' disabled' : '') + ' />' +
       '<span class="best-week-badge"' + (best ? '' : ' hidden') + '>Best Review of Week</span></label>';
-  }
-
-  function showBestSelection(input, best) {
-    input.checked = best;
-    input.parentElement.querySelector('.best-week-badge').hidden = !best;
-    input.closest('.review-card-wrap').classList.toggle('is-best', best);
   }
 
   function summaryOf(row) {
@@ -288,15 +277,19 @@
       var id = input.getAttribute('data-best-id');
       // 목록 로딩 때 state 배열이 교체되므로 클릭 시점의 최신 목록을 읽습니다.
       var row = state[kind].filter(function (r) { return String(r.id) === String(id); })[0];
-      if (!row || input.disabled) return;
-      var previous = isBest(row);
+      if (!row || input.disabled || savingBest) return;
       var next = input.checked;
-      if (previous || !next) return;
-      // 선택 즉시 주차 내 다른 체크박스를 감추고, 저장에 실패하면 복원합니다.
-      showBestSelection(input, next);
-      input.disabled = true;
-      input.setAttribute('aria-busy', 'true');
-      row.best_of_week = true;
+      var before = state.reviews.concat(state.maps).map(function (r) {
+        return { row: r, best: r.best_of_week, selectedAt: r.best_selected_at };
+      });
+      savingBest = true;
+      if (next) state.reviews.concat(state.maps).forEach(function (r) {
+        if (String(r.week_key || '') === String(row.week_key || '')) {
+          r.best_of_week = false; r.best_selected_at = '';
+        }
+      });
+      row.best_of_week = next;
+      row.best_selected_at = next ? 'pending' : '';
       renderReviews();
       renderMaps();
       PL.table(kind === 'maps' ? 'concept_maps' : 'reviews').update(id, {
@@ -307,10 +300,14 @@
           throw new Error('저장 결과를 확인하지 못했습니다. 다시 시도해 주세요.');
         }
         Object.assign(row, updated);
+        savingBest = false;
         renderReviews();
         renderMaps();
       }).catch(function (err) {
-        row.best_of_week = previous;
+        before.forEach(function (old) {
+          old.row.best_of_week = old.best; old.row.best_selected_at = old.selectedAt;
+        });
+        savingBest = false;
         renderReviews();
         renderMaps();
         PL.toast('BEST 표시를 저장하지 못했습니다: ' + (err.message || '네트워크 오류'), 'error');

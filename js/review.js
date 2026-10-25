@@ -51,7 +51,7 @@
 
     /* 헤더 */
     html += '<header class="page-head">';
-    if (String(row.best_of_week).toLowerCase() === 'true') {
+    if (String(row.best_of_week).toLowerCase() === 'true' && row.best_selected_at) {
       html += '<div><span class="best-week-badge">Best Review of Week</span></div>';
     }
     html += '<div class="eyebrow">' +
