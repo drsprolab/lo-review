@@ -53,11 +53,12 @@
   }
 
   /* ---------- 주차 묶음 ----------
-   * 한 주(월~일) 단위로 묶습니다. 다음 주 월요일 0시가 되면 그 주는 접힌 묶음이 됩니다.
+   * 한 주(월~일) 단위로 묶습니다. 제출 주차의 목록은 모두 펼쳐 두고,
+   * 다음 주 목요일 오전 10시가 되면 그 주는 접힌 묶음이 됩니다. (예: 9주차 10.19~10.25 → 10.29(목) 오전 10시)
    * 제출물은 자동으로 지우지 않습니다(삭제는 교수님 요청 시 구글 시트에서 직접).
    */
-  var FOLD_AFTER = { reviews: 7, maps: 7 }; // 주 시작(월요일)부터 며칠 뒤 = 다음 주 월요일
-  var FOLD_HOUR = 0;
+  var FOLD_AFTER = { reviews: 10, maps: 10 }; // 주 시작(월요일)부터 며칠 뒤 = 다음 주 목요일
+  var FOLD_HOUR = 10;
 
   function foldAt(key, kind) {
     var d = PL.weekKeyToDate(key);
@@ -74,7 +75,7 @@
 
   function foldNote(d) {
     var days = ['일', '월', '화', '수', '목', '금', '토'];
-    return (d.getMonth() + 1) + '.' + d.getDate() + '(' + days[d.getDay()] + ')에 한 묶음으로 정리';
+    return (d.getMonth() + 1) + '.' + d.getDate() + '(' + days[d.getDay()] + ') 오전 ' + FOLD_HOUR + '시에 한 묶음으로 정리';
   }
 
   // list → [{ key, rows }] 최신 주차부터, 주 안에서는 이름순
@@ -96,41 +97,13 @@
       });
   }
 
-  /* ---------- Sample 묶음 ----------
-   * 작성 예시. PRO-AX Lab Review의 김예서·김재현 리뷰를 이 시트로 복사해 두었습니다.
-   * 주차 묶음에서 빼고 맨 위의 'Sample' 묶음에 따로 둡니다. 시트의 id 로 지정합니다.
-   */
-  var SAMPLE_IDS = {
-    reviews: [
-      'c5374508-9bb7-4edc-94ae-58270ffad141', // 김예서 — Making transparency transparent
-      'db8b1498-3dbb-42d4-b446-af22fe119b6f'  // 김재현 — Transfer of training
-    ],
-    maps: []
-  };
-
-  function isSample(row, kind) {
-    return SAMPLE_IDS[kind].indexOf(row.id) !== -1;
-  }
-
-  function countLabel(list, kind) {
-    var n = list.filter(function (r) { return isSample(r, kind); }).length;
-    return '전체 ' + (list.length - n) + '편' + (n ? ' · Sample ' + n + '편' : '');
-  }
-
-  function sampleGroup(rows, gridClass, card) {
-    if (!rows.length) return '';
-    return '<details class="wk-fold wk-sample">' +
-      '<summary class="wk-head">Sample<small>' + rows.length + '편</small>' +
-        '<span class="wk-note">작성 예시</span></summary>' +
-      '<div class="' + gridClass + '">' + rows.map(card).join('') + '</div>' +
-    '</details>';
+  function countLabel(list) {
+    return '전체 ' + list.length + '편';
   }
 
   function renderWeeks(container, list, kind, gridClass, card) {
     var now = new Date();
-    var samples = list.filter(function (r) { return isSample(r, kind); });
-    var rest = list.filter(function (r) { return !isSample(r, kind); });
-    container.innerHTML = sampleGroup(samples, gridClass, card) + groupByWeek(rest).map(function (g) {
+    container.innerHTML = groupByWeek(list).map(function (g) {
       var at = foldAt(g.key, kind);
       var cards = '<div class="' + gridClass + '">' + g.rows.map(card).join('') + '</div>';
       var count = '<small>' + g.rows.length + '편</small>';

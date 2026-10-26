@@ -9,7 +9,8 @@ PRO-AX Lab Review(`drsprolab/proax-lab-review`, /proax-lab-review/)를 복사해
 - 주의사항: PRO-AX Lab Review와 동일 (SSCI만 · 본인의 인지적 노력 · 시간엄수)
 - 일정: **일요일 논문 리뷰 — 매주 일요일 밤 11:59까지**, **Conceptual Map — 지정 제출시간 별도 공지**
 - **제출물은 교수님이 직접 지우라고 할 때까지 절대 지우거나 리셋하지 않는다** (자동 삭제 기능 없음, 삭제는 구글 시트에서)
-- 같은 주차 제출물은 **다음 주 월요일 0시**에 한 묶음(접힌 묶음)으로 정리 (`FOLD_AFTER`, `FOLD_HOUR` in `js/app.js`)
+- 같은 주차 제출물은 목록 전체를 펼쳐 두고 **다음 주 목요일 오전 10시**에 한 묶음(접힌 묶음)으로 정리 (`FOLD_AFTER`=10, `FOLD_HOUR`=10 in `js/app.js`). 9주차 → 10.29(목) 10시
+- Sample 묶음 없음 (2026-10-26 삭제). 예시 2편은 `HIDDEN_IDS`(js/api.js)로 숨김, 시트 행은 유지
 - 주차 표시는 **수업 주차**: 2026-10-19(월)~10-25(일)이 **9주차** (`COURSE_WEEK1` = 2026-08-24, `courseWeek()` in `js/api.js`). 저장값 `week_key`는 ISO 주차(`2026-W43`) 그대로
 - 임시 저장 키는 PRO-AX와 겹치지 않게 `lo-review-*`, `lo-concept-*` (같은 도메인이라 localStorage 공유됨)
 

@@ -7,6 +7,15 @@
 
   var TABLE_NAMES = { reviews: 'reviews', students: 'students' };
 
+  /* 사이트에 보이지 않게 할 행 (2026-10-26 교수님 요청: Sample 묶음 삭제). 구글 시트의 행은 그대로 둔다. */
+  var HIDDEN_IDS = {
+    reviews: [
+      'c5374508-9bb7-4edc-94ae-58270ffad141', // 김예서 예시 (PRO-AX에서 복사)
+      'db8b1498-3dbb-42d4-b446-af22fe119b6f'  // 김재현 예시 (PRO-AX에서 복사)
+    ]
+  };
+  function hidden(table, row) { return !!row && (HIDDEN_IDS[table] || []).indexOf(row.id) !== -1; }
+
   // 구글 Apps Script 웹앱 주소 (apps-script/Code.gs 를 배포하고 받은 …/exec 주소).
   // 비어 있으면 'local' = 이 브라우저(localStorage)에만 저장하는 미리보기 모드.
   // LO_Review 전용 시트의 웹앱 주소 (PRO-AX Lab Review와 별도). 받으면 여기에 넣는다.
@@ -109,8 +118,8 @@
   function makeApi(table) {
     return {
       name: table,
-      list: function () { return gasGet({ action: 'list', table: table }); },
-      get: function (id) { return gasGet({ action: 'get', table: table, id: id }); },
+      list: function () { return gasGet({ action: 'list', table: table }).then(function (rows) { return (rows || []).filter(function (r) { return !hidden(table, r); }); }); },
+      get: function (id) { return gasGet({ action: 'get', table: table, id: id }).then(function (row) { return hidden(table, row) ? null : row; }); },
       create: function (data) { return gasPost({ action: 'create', table: table, data: data }); },
       // 선정 변경은 기존 제출 시각을 전달하고, 본문 재제출은 서버의 새 updated_at을 사용합니다.
       update: function (id, data) { return gasPost({ action: 'update', table: table, id: id, data: Object.assign({ submitted_time: null }, data) }); },
