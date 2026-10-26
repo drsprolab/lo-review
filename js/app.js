@@ -39,8 +39,17 @@
     return String(row.best_of_week).toLowerCase() === 'true' && !!row.best_selected_at;
   }
 
+  // 그 주에 이미 BEST가 정해졌는지 (논문 리뷰·Conceptual Map 통틀어 한 주에 하나)
+  function weekHasBest(weekKey) {
+    return state.reviews.concat(state.maps).some(function (r) {
+      return String(r.week_key || '') === String(weekKey || '') && isBest(r);
+    });
+  }
+
   function bestControl(row, kind) {
     var best = isBest(row);
+    // BEST가 정해진 주에는 다른 카드의 체크박스를 숨긴다(선정을 풀면 다시 보임)
+    if (!best && weekHasBest(row.week_key)) return '';
     return '<label class="best-checkbox" title="' + (best ? 'Best Review of Week 선정 해제' : 'Best Review of Week 선정') + '">' +
       '<input type="checkbox" data-best-kind="' + kind + '" data-best-id="' + PL.esc(row.id) +
       '" aria-label="' + PL.esc((row.student || '이름 없음') + ' · Best Review of Week') +
