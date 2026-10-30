@@ -47,11 +47,15 @@ function route(req) {
   if (req.action !== 'ping') checkPassword(req);
   switch (req.action) {
     case 'auth': return 'ok';
+    case 'best-auth': requireBestAdmin(req); return 'ok';
     case 'list': return listRows(sheetFor(req.table));
     case 'get': return getRow(sheetFor(req.table), req.id);
-    case 'create': return withLock(function () { return createRow(sheetFor(req.table), req.data || {}); });
+    case 'create':
+      requireBestAdminForWrite(req);
+      return withLock(function () { return createRow(sheetFor(req.table), req.data || {}); });
     case 'update': return withLock(function () {
       var data = req.data || {};
+      requireBestAdminForWrite(req);
       if (Object.prototype.hasOwnProperty.call(data, 'best_of_week')) {
         return updateBest(req.table, req.id, data);
       }
@@ -71,6 +75,20 @@ function checkPassword(req) {
   var pw = PropertiesService.getScriptProperties().getProperty('PASSWORD');
   if (!pw) return;
   if (String(req.key || '') !== String(pw)) throw new Error('AUTH: 비밀번호가 맞지 않습니다.');
+}
+
+// BEST_ADMIN_PASSWORD는 공유 열람 비밀번호와 별도로 Script Properties에 설정합니다.
+// 설정되지 않았으면 관리자 기능을 잠근 상태로 유지합니다.
+function requireBestAdmin(req) {
+  var pw = PropertiesService.getScriptProperties().getProperty('BEST_ADMIN_PASSWORD');
+  if (!pw || String(req.best_key || '') !== String(pw)) {
+    throw new Error('BEST_AUTH: 관리자 비밀번호가 맞지 않거나 설정되지 않았습니다.');
+  }
+}
+
+function requireBestAdminForWrite(req) {
+  var data = req.data || {};
+  if (Object.prototype.hasOwnProperty.call(data, 'best_of_week')) requireBestAdmin(req);
 }
 
 // 체크박스 선택/해제: 한 주에 한 편만 남기고 기존 선정은 같은 잠금 안에서 해제합니다.
