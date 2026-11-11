@@ -191,10 +191,12 @@ SSCI 확인 체크박스와 자동 규칙 점검(국문·MDPI 차단 등)은 제
 
 ## 10. 참고
 
-- 외부 의존성: Google Fonts(IBM Plex Sans KR / Mono)만 사용. 차트 라이브러리 없음.
+- 외부 의존성: Google Fonts(IBM Plex Sans KR / Mono). 관리자 주차별 PDF 내보내기를 실행할 때 html2canvas 1.4.1과 jsPDF 4.0.0을 cdnjs에서 불러옵니다. 그 외 차트 라이브러리는 없습니다.
 - 디자인 토큰: `--ink #16202b`, `--muted #5a6573`, `--paper #fff`, `--tint #f3f5f8`, `--line #dde2e8`, `--accent #1d4f86`, `--accent-soft #e6edf6`, `--good #1a7f37`, `--warn #b54708`, `--danger #c0392b`.
 - 디자인 레퍼런스: `hrdpro.hanyang.ac.kr/daily-insight/` 톤(절제된 타이포그래피 + 좌측 정렬 문서형 레이아웃).
 
 ## Best Review 관리자 권한
 
 Best Review 체크박스는 기본 화면에서 숨깁니다. 관리자 페이지(`/lo-review/?best-admin=1`)에서 별도 관리자 비밀번호를 확인한 경우에만 표시합니다. LO Review Apps Script 프로젝트의 **프로젝트 설정 → 스크립트 속성**에 `BEST_ADMIN_PASSWORD`를 설정하고 새 버전으로 배포해야 합니다. 브라우저 표시와 별도로 서버도 인증된 BEST 변경 요청만 저장합니다.
+
+관리자 페이지의 Conceptual Map 목록 위에는 제출 주차별 PDF 다운로드 버튼이 표시됩니다. 버튼 하나가 그 주의 모든 Conceptual Map 제출물(이론·도식·설명)을 하나의 PDF로 저장합니다. PDF는 관리자 브라우저에서 생성되며, 변환 라이브러리(html2canvas / jsPDF)는 버튼을 누를 때만 cdnjs에서 가져옵니다.
