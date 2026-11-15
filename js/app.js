@@ -316,7 +316,12 @@
   function start() {
     if (!BEST_ADMIN_MODE) { boot(); return; }
     PL.activateBestAdmin().catch(function (err) {
-      PL.toast('Best Review 관리자 인증을 완료하지 못했습니다: ' + (err.message || '확인 실패'), 'error');
+      var m = String(err.message || '확인 실패');
+      var why = /BEST_AUTH/.test(m) ? '관리자 비밀번호가 맞지 않거나, Apps Script 스크립트 속성 BEST_ADMIN_PASSWORD가 설정되지 않았습니다.'
+        : /알 수 없는 요청/.test(m) ? '서버(Apps Script)가 예전 버전이라 관리자 기능이 없습니다. 새 버전으로 배포해야 합니다.'
+        : /^AUTH/.test(m) ? '열람 비밀번호를 먼저 입력해야 합니다.'
+        : /Failed to fetch|NetworkError|서버 응답 오류/.test(m) ? '서버에 연결하지 못했습니다. 인터넷 연결을 확인해 주세요.' : '';
+      PL.toast('Best Review 관리자 인증을 완료하지 못했습니다: ' + (why ? why + ' (' + m + ')' : m), 'error');
     }).then(boot);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
