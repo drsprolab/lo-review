@@ -7,7 +7,8 @@
   'use strict';
 
   var PL = window.PL;
-  var BEST_ADMIN_MODE = new URLSearchParams(window.location.search).get('best-admin') === '1';
+  // 관리자 버튼을 한 번 인증하면 이 기기에서는 다음 접속부터 주소에 ?best-admin=1이 없어도 관리자 화면(체크박스)으로 열린다.
+  var BEST_ADMIN_MODE = new URLSearchParams(window.location.search).get('best-admin') === '1' || !!(PL && PL.hasBestAdminPass && PL.hasBestAdminPass());
 
   var state = {
     reviews: [],
@@ -309,7 +310,8 @@
 
   // 관리자 버튼: 관리자 화면에서는 '관리자 나가기'로 바뀐다.
   var adminLink = document.querySelector('[data-best-admin-link]');
-  if (adminLink && BEST_ADMIN_MODE) { adminLink.textContent = '관리자 나가기'; adminLink.href = 'index.html'; adminLink.classList.add('is-admin'); }
+  if (adminLink && BEST_ADMIN_MODE) { adminLink.textContent = '관리자 나가기'; adminLink.href = 'index.html'; adminLink.classList.add('is-admin');
+    adminLink.addEventListener('click', function () { PL.clearBestAdmin(); }); }
 
   function start() {
     if (!BEST_ADMIN_MODE) { boot(); return; }
