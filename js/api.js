@@ -546,6 +546,8 @@
     doiUrl: doiUrl,
     isLocal: BACKEND === 'local',
     isBestAdmin: function () { return bestAdminActive; },
+    // 서버 호출이 없는 페이지(Course Materials)도 수강생 비밀번호를 묻는다
+    requirePass: function () { if (BACKEND === 'google' && !getPass()) needGate(); },
     hasBestAdminPass: function () { return !!getBestAdminPass(); },
     clearBestAdmin: function () { setBestAdminPass(''); bestAdminActive = false; },
     activateBestAdmin: activateBestAdmin,
