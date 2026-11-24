@@ -10,9 +10,11 @@
  *   "링크가 있는 모든 사용자 보기"로 공유되어 사이트에 표시됩니다.
  */
 
-var TABLES = ['reviews', 'concept_maps'];
+var TABLES = ['reviews', 'concept_maps', 'final_projects'];
 var FOLDER_NAME = 'LO_Review 도식';
+var PDF_FOLDER_NAME = 'LO_Review 최종과제';
 var MAX_UPLOAD = 10 * 1024 * 1024; // 10MB
+var MAX_PDF = 20 * 1024 * 1024; // 최종과제 PDF 20MB
 var BASE_COLUMNS = ['id', 'created_at', 'updated_at'];
 
 /* ---------- 요청 받기 ---------- */
@@ -232,6 +234,7 @@ function clean(data) {
 
 function uploadImage(req) {
   var type = String(req.type || '');
+  if (type === 'application/pdf') return uploadPdf(req);
   if (!/^image\/(png|jpeg|webp|gif)$/.test(type)) throw new Error('PNG, JPEG, WEBP, GIF 이미지만 올릴 수 있습니다.');
   var bytes = Utilities.base64Decode(String(req.data || ''));
   if (!bytes.length) throw new Error('이미지가 비어 있습니다.');
@@ -247,9 +250,21 @@ function uploadImage(req) {
   return { reference: file.getId(), original_filename: name, content_type: type, size: bytes.length };
 }
 
-function folder() {
-  var it = DriveApp.getFoldersByName(FOLDER_NAME);
-  return it.hasNext() ? it.next() : DriveApp.createFolder(FOLDER_NAME);
+// 최종과제 PDF: 링크 공유를 켜지 않아 소유자(교수님)만 볼 수 있습니다.
+function uploadPdf(req) {
+  var bytes = Utilities.base64Decode(String(req.data || ''));
+  if (!bytes.length) throw new Error('PDF 파일이 비어 있습니다.');
+  if (bytes.length > MAX_PDF) throw new Error('PDF는 20MB 이하만 올릴 수 있습니다.');
+  if (String.fromCharCode(bytes[0], bytes[1], bytes[2], bytes[3]) !== '%PDF') throw new Error('PDF 파일이 아닙니다.');
+  var name = String(req.name || 'final-project.pdf').slice(0, 120);
+  var file = folder(PDF_FOLDER_NAME).createFile(Utilities.newBlob(bytes, 'application/pdf', name));
+  return { reference: file.getId(), original_filename: name, content_type: 'application/pdf', size: bytes.length };
+}
+
+function folder(folderName) {
+  var fname = folderName || FOLDER_NAME;
+  var it = DriveApp.getFoldersByName(fname);
+  return it.hasNext() ? it.next() : DriveApp.createFolder(fname);
 }
 
 /* ---------- 설치 확인 (편집기에서 한 번 실행) ---------- */
@@ -258,5 +273,6 @@ function folder() {
 function setup() {
   TABLES.forEach(sheetFor);
   folder();
+  folder(PDF_FOLDER_NAME);
   Logger.log('준비 완료: ' + SpreadsheetApp.getActiveSpreadsheet().getUrl());
 }
