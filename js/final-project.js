@@ -39,7 +39,7 @@
     e.preventDefault();
     var t = team.value.trim(), n = who.value.trim();
     if (!t) { say('팀 이름을 적어 주세요.', 'err'); team.focus(); return; }
-    if (!n) { say('제출자 이름을 적어 주세요.', 'err'); who.focus(); return; }
+    if (!n) { say('팀원 전체 이름을 띄어쓰기로 구분해 적어 주세요.', 'err'); who.focus(); return; }
     if (!file) { say('제출할 PDF 파일을 골라 주세요.', 'err'); return; }
     btn.disabled = true; btn.textContent = '올리는 중…';
     say('PDF를 올리고 있습니다. 창을 닫지 말아 주세요.');

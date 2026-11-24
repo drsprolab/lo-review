@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" />
 <link rel="stylesheet" href="css/style.css?v=4" />
-<link rel="stylesheet" href="css/components.css?v=20261124-final" />
+<link rel="stylesheet" href="css/components.css?v=20261124-members" />
 </head>
 <body>
 <a class="skip-link" href="#reviewList">본문으로 건너뛰기</a>
@@ -72,7 +72,7 @@
       <form id="finalForm" class="final-form" novalidate>
         <div class="final-row">
           <div class="field"><label for="finalTeam">팀 이름</label><input id="finalTeam" type="text" maxlength="60" autocomplete="off" required /></div>
-          <div class="field"><label for="finalName">제출자 이름</label><input id="finalName" type="text" maxlength="40" autocomplete="name" required /></div>
+          <div class="field"><label for="finalName">팀원 전체 이름 <span class="hint">띄어쓰기로 구분</span></label><input id="finalName" type="text" maxlength="120" autocomplete="off" placeholder="예: 홍길동 김철수 이영희" required /></div>
         </div>
         <div class="field">
           <label for="finalFile">최종과제 PDF <span class="hint">PDF · 20MB 이하</span></label>
@@ -153,6 +153,6 @@
 <script src="js/markdown.js?v=20261026-best-lock"></script>
 <script src="js/admin-weekly-pdf.js?v=20261111-print"></script>
 <script src="js/app.js?v=20261115-admin-msg"></script>
-<script src="js/final-project.js?v=20261124-final"></script>
+<script src="js/final-project.js?v=20261124-members"></script>
 </body>
 </html>
