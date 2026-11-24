@@ -1,5 +1,5 @@
 /* 최종과제 제출 (팀프로젝트 팀) — 대문의 주의사항 옆 칸.
- * PDF 한 개를 드라이브(LO_Review 최종과제 폴더)에 올리고, 팀 이름·제출자·파일 정보를 시트 final_projects 에 저장한다.
+ * PDF 한 개를 드라이브(LO_Review 최종과제 폴더)에 올리고, 제출자 이름·팀원 전체 이름·파일 정보를 시트 final_projects 에 저장한다.
  * 제출물은 지우거나 덮어쓰지 않는다(다시 내면 새 행이 추가되며, 최신 제출은 created_at 으로 구분). */
 (function () {
   'use strict';
@@ -38,14 +38,14 @@
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     var t = team.value.trim(), n = who.value.trim();
-    if (!t) { say('팀 이름을 적어 주세요.', 'err'); team.focus(); return; }
+    if (!t) { say('제출자 이름을 적어 주세요.', 'err'); team.focus(); return; }
     if (!n) { say('팀원 전체 이름을 띄어쓰기로 구분해 적어 주세요.', 'err'); who.focus(); return; }
     if (!file) { say('제출할 PDF 파일을 골라 주세요.', 'err'); return; }
     btn.disabled = true; btn.textContent = '올리는 중…';
     say('PDF를 올리고 있습니다. 창을 닫지 말아 주세요.');
     window.PL.upload('final_projects', file).then(function (up) {
       return window.PL.table('final_projects').create({
-        team_name: t, submitter: n, file_ref: up.reference, file_name: up.original_filename || file.name, file_size: up.size || file.size
+        submitter: t, members: n, file_ref: up.reference, file_name: up.original_filename || file.name, file_size: up.size || file.size
       });
     }).then(function () {
       say('제출되었습니다: ' + t + ' · ' + file.name, 'ok');
